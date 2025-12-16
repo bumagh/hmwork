@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'https://hmwork.tutlab.tech:20261/api';
 
 interface ApiResponse<T = any>
 {

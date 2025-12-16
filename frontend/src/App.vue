@@ -7,7 +7,7 @@ interface UserState
   token: string;
   isLoggedIn: boolean;
 }
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'https://hmwork.tutlab.tech:20261';
 export default {
   name: 'App',
   data ()

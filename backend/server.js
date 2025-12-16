@@ -129,7 +129,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = parseInt(process.env.PORT || '3000', 10);
+const PORT = parseInt(process.env.PORT || '20261', 10);
 const server = app.listen(PORT, () => {
   console.log(`记账助手服务已启动`);
   console.log(`服务地址: http://localhost:${PORT}`);
