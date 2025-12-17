@@ -80,7 +80,8 @@
 
           <view class="form-group">
             <text class="form-label">任务描述</text>
-            <textarea class="form-textarea" v-model=" taskForm.description " placeholder="请输入任务描述（可选）" maxlength="500" />
+            <textarea class="form-textarea" v-model=" taskForm.description " placeholder="请输入任务描述（可选）"
+              maxlength="500" />
           </view>
 
           <view class="form-group">
@@ -774,7 +775,7 @@ uni-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 100;
   animation: fadeIn 0.3s ease;
 }
 

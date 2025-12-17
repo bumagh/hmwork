@@ -84,7 +84,8 @@
 
           <view class="form-group">
             <text class="form-label">开始日期</text>
-            <picker mode="date" :value=" projectForm.start_date " @change=" onStartDateChange ">
+            <picker mode="date" :value=" projectForm.start_date " @click=" onClickDatePicker "
+              @change=" onStartDateChange ">
               <view class="picker-input">
                 <text>{{ projectForm.start_date || '请选择开始日期' }}</text>
                 <text class="arrow">▼</text>
@@ -287,7 +288,10 @@ export default {
     {
       this.projectForm.start_date = e.detail.value;
     },
-
+    onClickDatePicker ( e: any )
+    {
+      // this.showProjectModal = false;
+    },
     onEndDateChange ( e: any )
     {
       this.projectForm.end_date = e.detail.value;
@@ -295,7 +299,7 @@ export default {
 
     handleModalOverlayClick ()
     {
-      this.closeProjectModal();
+      // this.closeProjectModal();
     },
 
     closeProjectModal ()
@@ -620,7 +624,7 @@ uni-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 100;
   animation: fadeIn 0.3s ease;
 }
 

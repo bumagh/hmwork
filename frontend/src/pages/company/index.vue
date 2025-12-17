@@ -184,7 +184,7 @@ export default {
       {
         if ( res.success && res.data )
         {
-          this.userCount = res.data.length;
+          this.userCount = res.data.pagination.total;
         }
       } ).catch( err =>
       {
@@ -549,7 +549,7 @@ uni-input {
   align-items: flex-start;
   justify-content: flex-end;
   padding: 96rpx 32rpx 32rpx;
-  z-index: 1000;
+  z-index: 100;
   animation: fadeIn 0.3s ease;
 }
 
