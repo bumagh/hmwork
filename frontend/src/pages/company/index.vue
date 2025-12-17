@@ -57,7 +57,7 @@
           <view class="action-icon-wrapper finance">
             <text class="action-icon">💰</text>
           </view>
-          <text class="action-text">华梦沃客</text>
+          <text class="action-text">财务管理</text>
         </view>
       </view>
     </view>

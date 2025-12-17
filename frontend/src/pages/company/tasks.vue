@@ -250,9 +250,9 @@ export default {
     {
       userApi.getAll().then( res =>
       {
-        if ( res.success && res.data )
+        if ( res && res.data && res.data.users )
         {
-          this.users = res.data;
+          this.users = res.data.users;
         }
       } ).catch( err =>
       {
