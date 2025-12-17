@@ -1,5 +1,5 @@
-// const BASE_URL = 'https://hmwork.tutlab.tech/api';
-const BASE_URL = 'http://localhost:20261/api';
+const BASE_URL = 'https://hmwork.tutlab.tech/api';
+// const BASE_URL = 'http://localhost:20261/api';
 
 interface ApiResponse<T = any>
 {
