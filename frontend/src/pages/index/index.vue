@@ -2,7 +2,7 @@
   <view class="index-page">
     <view class="page-header">
       <view class="header-content">
-        <text class="page-title">记账助手 By HAISNAP</text>
+        <text class="page-title">华梦沃客</text>
         <view class="budget-info" @click=" showBudgetSetting ">
           <text class="budget-label">本月预算</text>
           <text class="budget-amount" :class=" { exceeded: isExceeded } ">
@@ -83,8 +83,8 @@
       </view>
     </view>
 
-    <transaction-form :visible=" transactionFormVisible " :transaction=" editingTransaction " @close=" closeTransactionForm "
-      @success=" handleTransactionSuccess " />
+    <transaction-form :visible=" transactionFormVisible " :transaction=" editingTransaction "
+      @close=" closeTransactionForm " @success=" handleTransactionSuccess " />
 
     <budget-form :visible=" budgetFormVisible " :month=" currentMonth " @close=" closeBudgetForm "
       @success=" handleBudgetSuccess " />
@@ -101,7 +101,8 @@
             <view class="alert-info">
               <text class="alert-category">{{ alert.category_name || '总预算' }}</text>
               <text class="alert-message">
-                已使用 ¥{{ alert.used_amount.toFixed( 2 ) }} / ¥{{ ( alert.category_budget || alert.total_budget ).toFixed( 2 )
+                已使用 ¥{{ alert.used_amount.toFixed( 2 ) }} / ¥{{ ( alert.category_budget || alert.total_budget ).toFixed(
+                  2 )
                 }}
               </text>
               <text class="alert-percent">{{ alert.usage_percentage.toFixed( 1 ) }}%</text>

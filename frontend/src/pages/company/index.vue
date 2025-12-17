@@ -57,7 +57,7 @@
           <view class="action-icon-wrapper finance">
             <text class="action-icon">💰</text>
           </view>
-          <text class="action-text">记账助手</text>
+          <text class="action-text">华梦沃客</text>
         </view>
       </view>
     </view>

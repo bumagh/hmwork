@@ -83,7 +83,7 @@ app.use('/api/tasks', tasksRouter);
 app.get('/api', (req, res) => {
   res.json({
     success: true,
-    message: '记账助手 API服务运行中',
+    message: '华梦沃客 API服务运行中',
     version: '2.0.0',
     endpoints: {
       auth: '/api/auth',
@@ -131,7 +131,7 @@ app.use((err, req, res, next) => {
 
 const PORT = parseInt(process.env.PORT || '20261', 10);
 const server = app.listen(PORT, () => {
-  console.log(`记账助手服务已启动`);
+  console.log(`华梦沃客服务已启动`);
   console.log(`服务地址: http://localhost:${PORT}`);
   console.log(`API端点: http://localhost:${PORT}/api`);
 });

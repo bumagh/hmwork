@@ -9,7 +9,7 @@
     {
       "path": "pages/company/index",
       "style": {
-        "navigationBarTitleText": "公司管理 By HAISNAP",
+        "navigationBarTitleText": "公司管理 ",
         "navigationBarBackgroundColor": "#FFFFFF",
         "navigationBarTextStyle": "black",
         "backgroundColor": "#F2F2F2",
@@ -19,7 +19,7 @@
     {
       "path": "pages/login/index",
       "style": {
-        "navigationBarTitleText": "登录 - 记账助手",
+        "navigationBarTitleText": "登录 - 华梦沃客",
         "navigationBarBackgroundColor": "#667eea",
         "navigationBarTextStyle": "white",
         "backgroundColor": "#667eea",
@@ -29,7 +29,7 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "记账助手 By HAISNAP",
+        "navigationBarTitleText": "华梦沃客 ",
         "navigationBarBackgroundColor": "#FFFFFF",
         "navigationBarTextStyle": "black",
         "backgroundColor": "#F2F2F2",
@@ -79,7 +79,7 @@
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "记账助手",
+    "navigationBarTitleText": "华梦沃客",
     "navigationBarBackgroundColor": "#FFFFFF",
     "backgroundColor": "#F2F2F2",
     "backgroundTextStyle": "light",
@@ -101,7 +101,7 @@
         "query": ""
       },
       {
-        "name": "记账助手",
+        "name": "华梦沃客",
         "path": "pages/index/index",
         "query": ""
       },

@@ -115,7 +115,7 @@ export default {
 
     navigateToHome ()
     {
-      // 默认跳转到公司管理首页，如果失败则跳转到记账助手首页
+      // 默认跳转到公司管理首页，如果失败则跳转到华梦沃客首页
       uni.reLaunch( {
         url: '/pages/company/index',
         fail: () =>

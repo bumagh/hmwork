@@ -2,7 +2,7 @@
   <view class="login-page">
     <view class="login-container">
       <view class="login-header">
-        <text class="app-title">记账助手 By HAISNAP</text>
+        <text class="app-title">华梦沃客 </text>
         <text class="app-subtitle">公司管理平台</text>
       </view>
 

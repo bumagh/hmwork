@@ -1,97 +1,111 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <link rel="stylesheet" href="./assets/uni.605e8ec4.css">
+  <head>
+    <link rel="stylesheet" href="./assets/uni.605e8ec4.css" />
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>记账助手 By HAISNAP</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400&display=swap">
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>华梦沃客 </title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400&display=swap"
+    />
     <style>
-        page,view,text,swiper,swiper-item,image,navigator{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      page,
+      view,
+      text,
+      swiper,
+      swiper-item,
+      image,
+      navigator {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Helvetica Neue', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #F2F2F2;
-            font-weight: 300;
-            color: #333333;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        font-family: "Helvetica Neue", "Noto Sans SC", -apple-system,
+          BlinkMacSystemFont, sans-serif;
+        background-color: #f2f2f2;
+        font-weight: 300;
+        color: #333333;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
 
-        #app {
-            width: 100%;
-            height: 100%;
-        }
+      #app {
+        width: 100%;
+        height: 100%;
+      }
 
-        body {
-            font-size: 14px;
-            line-height: 1.6;
-        }
+      body {
+        font-size: 14px;
+        line-height: 1.6;
+      }
 
-        uni-input {
-            height: auto !important;
-            min-height: 0 !important;
-            line-height: normal !important;
-        }
+      uni-input {
+        height: auto !important;
+        min-height: 0 !important;
+        line-height: normal !important;
+      }
 
-        .loading-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #F2F2F2;
-            z-index: 9999;
-        }
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f2f2f2;
+        z-index: 9999;
+      }
 
-        .loading-icon {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #6FCF97;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
+      .loading-icon {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #6fcf97;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
 
-        .loading-text {
-            margin-top: 16px;
-            font-size: 14px;
-            font-weight: 300;
-            color: #828282;
-        }
+      .loading-text {
+        margin-top: 16px;
+        font-size: 14px;
+        font-weight: 300;
+        color: #828282;
+      }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
-  <script type="module" crossorigin src="./assets/index-BJtJjslE.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-Bt_bIQHK.css">
-</head>
-<body>
+    <script type="module" crossorigin src="./assets/index-BJtJjslE.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Bt_bIQHK.css" />
+  </head>
+  <body>
     <div id="app">
-        <div class="loading-container">
-            <div class="loading-icon"></div>
-            <div class="loading-text">加载中...</div>
-        </div>
+      <div class="loading-container">
+        <div class="loading-icon"></div>
+        <div class="loading-text">加载中...</div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
