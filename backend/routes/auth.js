@@ -176,7 +176,7 @@ router.get('/verify', (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    
+
     User.getUserById(decoded.id, (err, user) => {
       if (err || !user) {
         return res.status(401).json({
@@ -263,4 +263,100 @@ router.post('/auto-login', (req, res) => {
   });
 });
 
+// 获取所有用户列表（仅管理员可访问）
+router.get('/users', (req, res) => {
+  // 支持分页和搜索
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const search = req.query.search || '';
+  const role = req.query.role || '';
+
+  // 计算偏移量
+  const offset = (page - 1) * limit;
+
+  // 构建查询条件
+  const conditions = {};
+  const params = [];
+
+  if (search) {
+    conditions.username = `username LIKE ?`;
+    params.push(`%${search}%`);
+  }
+
+  if (role) {
+    conditions.role = `role = ?`;
+    params.push(role);
+  }
+
+  // 构建WHERE子句
+  let whereClause = '';
+  const conditionKeys = Object.keys(conditions);
+
+  if (conditionKeys.length > 0) {
+    whereClause = 'WHERE ' + conditionKeys.map(key => conditions[key]).join(' AND ');
+  }
+
+  // 查询用户总数
+  const countQuery = `SELECT COUNT(*) as total FROM users ${whereClause}`;
+
+  User.queryAllUsers(countQuery, params, (err, countResult) => {
+    if (err) {
+      logger.error(`查询用户总数失败: ${err.message}`);
+      return res.status(500).json({
+        success: false,
+        message: '获取用户列表失败',
+        error: err.message
+      });
+    }
+
+    const total = countResult[0]?.total || 0;
+    const totalPages = Math.ceil(total / limit);
+
+    // 查询用户数据
+    const query = `
+      SELECT id, username, role, created_at, updated_at 
+      FROM users 
+      ${whereClause}
+      ORDER BY created_at DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    const queryParams = [...params, limit, offset];
+
+    User.queryAllUsers(query, queryParams, (err, results) => {
+      if (err) {
+        logger.error(`查询用户列表失败: ${err.message}`);
+        return res.status(500).json({
+          success: false,
+          message: '获取用户列表失败',
+          error: err.message
+        });
+      }
+
+      // 过滤掉敏感信息，确保不返回密码
+      const users = results.map(user => ({
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        createdAt: user.created_at,
+        updatedAt: user.updated_at
+      }));
+
+      res.json({
+        success: true,
+        data: {
+          users,
+          pagination: {
+            page,
+            limit,
+            total,
+            totalPages,
+            hasNext: page < totalPages,
+            hasPrev: page > 1
+          }
+        }
+      });
+    });
+  });
+});
 module.exports = router;

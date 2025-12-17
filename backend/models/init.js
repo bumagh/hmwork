@@ -18,7 +18,7 @@ const getDatabase = () => {
 
 const initDatabase = () => {
   const db = getDatabase();
-  
+
   db.serialize(() => {
     db.run(`
       CREATE TABLE IF NOT EXISTS users (

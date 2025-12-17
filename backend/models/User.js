@@ -27,7 +27,7 @@ const initUserTable = () => {
       updated_at TEXT DEFAULT (datetime('now', '+8 hours'))
     )
   `;
-  
+
   db.run(createTableSQL, (err) => {
     if (err) {
       console.error('用户表创建失败:', err.message);
@@ -38,18 +38,39 @@ const initUserTable = () => {
 const createUser = (userData, callback) => {
   const db = getDatabase();
   const { username, password, role } = userData;
-  
+
   const sql = `
     INSERT INTO users (username, password, role)
     VALUES (?, ?, ?)
   `;
-  
-  db.run(sql, [username, password, role || 'user'], function(err) {
+
+  db.run(sql, [username, password, role || 'user'], function (err) {
     if (err) {
       console.error('创建用户失败:', err.message);
       return callback(err, null);
     }
     callback(null, { id: this.lastID, ...userData });
+  });
+};
+
+
+// 获取所有用户（带分页）
+const queryAllUsers = (query, params, callback) => {
+  db.all(query, params, (err, results) => {
+    if (err) return callback(err);
+    callback(null, results);
+  });
+};
+
+// 获取用户总数
+const getTotalUsers = (whereClause, params, callback) => {
+  const db = getDatabase();
+
+  const query = `SELECT COUNT(*) as total FROM users ${whereClause}`;
+
+  db.all(query, params, (err, results) => {
+    if (err) return callback(err);
+    callback(null, { total: results[0]?.total || 0 });
   });
 };
 
@@ -60,7 +81,7 @@ const getAllUsers = (callback) => {
     FROM users
     ORDER BY created_at DESC
   `;
-  
+
   db.all(sql, [], (err, rows) => {
     if (err) {
       console.error('查询用户列表失败:', err.message);
@@ -69,7 +90,6 @@ const getAllUsers = (callback) => {
     callback(null, rows || []);
   });
 };
-
 const getUserById = (id, callback) => {
   const db = getDatabase();
   const sql = `
@@ -77,7 +97,7 @@ const getUserById = (id, callback) => {
     FROM users
     WHERE id = ?
   `;
-  
+
   db.get(sql, [id], (err, row) => {
     if (err) {
       console.error('查询用户详情失败:', err.message);
@@ -94,7 +114,7 @@ const getUserByUsername = (username, callback) => {
     FROM users
     WHERE username = ?
   `;
-  
+
   db.get(sql, [username], (err, row) => {
     if (err) {
       console.error('按用户名查询失败:', err.message);
@@ -107,7 +127,7 @@ const getUserByUsername = (username, callback) => {
 const updateUser = (id, userData, callback) => {
   const db = getDatabase();
   const { username, password, role } = userData;
-  
+
   const sql = `
     UPDATE users
     SET username = COALESCE(?, username),
@@ -116,17 +136,17 @@ const updateUser = (id, userData, callback) => {
         updated_at = datetime('now', '+8 hours')
     WHERE id = ?
   `;
-  
-  db.run(sql, [username, password, role, id], function(err) {
+
+  db.run(sql, [username, password, role, id], function (err) {
     if (err) {
       console.error('更新用户失败:', err.message);
       return callback(err);
     }
-    
+
     if (this.changes === 0) {
       return callback(new Error('用户不存在'));
     }
-    
+
     callback(null, { id, changes: this.changes });
   });
 };
@@ -134,8 +154,8 @@ const updateUser = (id, userData, callback) => {
 const deleteUser = (id, callback) => {
   const db = getDatabase();
   const sql = 'DELETE FROM users WHERE id = ?';
-  
-  db.run(sql, [id], function(err) {
+
+  db.run(sql, [id], function (err) {
     if (err) {
       console.error('删除用户失败:', err.message);
       return callback(err);
@@ -152,7 +172,7 @@ const getUsersByRole = (role, callback) => {
     WHERE role = ?
     ORDER BY created_at DESC
   `;
-  
+
   db.all(sql, [role], (err, rows) => {
     if (err) {
       console.error('按角色查询用户失败:', err.message);
@@ -167,22 +187,22 @@ const validateCredentials = (username, password, callback) => {
     if (err) {
       return callback(err, null);
     }
-    
+
     if (!user) {
       return callback(null, { valid: false, message: '用户不存在' });
     }
-    
+
     if (user.password !== password) {
       return callback(null, { valid: false, message: '密码错误' });
     }
-    
-    callback(null, { 
-      valid: true, 
-      user: { 
-        id: user.id, 
-        username: user.username, 
-        role: user.role 
-      } 
+
+    callback(null, {
+      valid: true,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role
+      }
     });
   });
 };
@@ -197,5 +217,7 @@ module.exports = {
   deleteUser,
   getUsersByRole,
   validateCredentials,
-  getDatabase
+  getDatabase,
+  queryAllUsers,
+  getTotalUsers
 };

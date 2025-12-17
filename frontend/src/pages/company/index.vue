@@ -87,7 +87,7 @@
       <view class="user-menu-container" @click.stop>
         <view class="menu-header">
           <view class="menu-avatar" :style=" { backgroundColor: getUserColor() } ">
-            <text class="avatar-text">{{ currentUser.username.charAt( 0 ).toUpperCase() }}</text>
+            <text class="avatar-text">{{ currentUser.username }}</text>
           </view>
           <view class="menu-user-info">
             <text class="menu-username">{{ currentUser.username }}</text>

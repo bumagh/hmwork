@@ -1,4 +1,5 @@
-const BASE_URL = 'https://hmwork.tutlab.tech/api';
+// const BASE_URL = 'https://hmwork.tutlab.tech/api';
+const BASE_URL = 'http://localhost:20261/api';
 
 interface ApiResponse<T = any>
 {
@@ -337,8 +338,8 @@ export const authApi = {
 
 // ============ 用户管理相关接口 ============
 export const userApi = {
-  getAll: (): Promise<ApiResponse<User[]>> =>
-    request<User[]>( '/users' ),
+  getAll: (): Promise<ApiResponse<UserListResponse>> =>
+    request<UserListResponse>( '/auth/users' ),
 
   getById: ( id: number ): Promise<ApiResponse<User>> =>
     request<User>( `/users/${ id }` ),
@@ -468,3 +469,26 @@ export type {
   Project,
   Task,
 };
+
+interface User
+{
+  id?: number;
+  username: string;
+  password?: string;
+  role: 'resource_coordinator' | 'tech_manager' | 'consultant' | 'user';
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface UserListResponse
+{
+  users: User[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}

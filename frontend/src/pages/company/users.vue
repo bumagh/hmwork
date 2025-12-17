@@ -25,7 +25,7 @@
       <view class="user-card" v-for=" user in filteredUsers " :key=" user.id ">
         <view class="user-header">
           <view class="user-avatar" :style=" { backgroundColor: getUserColor( user.id ) } ">
-            <text class="avatar-text">{{ user.username.charAt( 0 ).toUpperCase() }}</text>
+            <text class="avatar-text">{{ user.username }}</text>
           </view>
           <view class="user-info">
             <text class="user-name">{{ user.username }}</text>
@@ -145,7 +145,7 @@ export default {
       {
         if ( res.success && res.data )
         {
-          this.users = res.data;
+          this.users = res.data.users;
         }
       } ).catch( err =>
       {

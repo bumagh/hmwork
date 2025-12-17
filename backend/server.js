@@ -16,6 +16,7 @@ const transactionsRouter = require('./routes/transactions');
 const categoriesRouter = require('./routes/categories');
 const budgetsRouter = require('./routes/budgets');
 const authRouter = require('./routes/auth');
+const userRouter = require('./routes/users');
 const projectsRouter = require('./routes/projects');
 const tasksRouter = require('./routes/tasks');
 
@@ -74,6 +75,7 @@ const initDatabase = () => {
 initDatabase();
 
 app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
 app.use('/api/transactions', transactionsRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/budgets', budgetsRouter);
@@ -87,6 +89,7 @@ app.get('/api', (req, res) => {
     version: '2.0.0',
     endpoints: {
       auth: '/api/auth',
+      users: '/api/users',
       transactions: '/api/transactions',
       categories: '/api/categories',
       budgets: '/api/budgets',
@@ -96,29 +99,29 @@ app.get('/api', (req, res) => {
   });
 });
 
-app.get('*', (req, res) => {
-  if (!fs.existsSync(publicPath)) {
-    return res.status(404).json({
-      success: false,
-      message: '前端资源未找到'
-    });
-  }
+// app.get('*', (req, res) => {
+//   if (!fs.existsSync(publicPath)) {
+//     return res.status(404).json({
+//       success: false,
+//       message: '前端资源未找到'
+//     });
+//   }
 
-  const filePath = path.join(publicPath, req.path);
-  if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-    return res.sendFile(filePath);
-  }
+//   const filePath = path.join(publicPath, req.path);
+//   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+//     return res.sendFile(filePath);
+//   }
 
-  const indexPath = path.join(publicPath, 'index.html');
-  if (fs.existsSync(indexPath)) {
-    return res.sendFile(indexPath);
-  }
+//   const indexPath = path.join(publicPath, 'index.html');
+//   if (fs.existsSync(indexPath)) {
+//     return res.sendFile(indexPath);
+//   }
 
-  res.status(404).json({
-    success: false,
-    message: '页面未找到'
-  });
-});
+//   res.status(404).json({
+//     success: false,
+//     message: '页面未找到'
+//   });
+// });
 
 app.use((err, req, res, next) => {
   logger.error(`请求错误: ${err.message}\n${err.stack}`);
@@ -129,7 +132,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = parseInt(process.env.PORT || '20261', 10);
+const PORT = parseInt('20261', 10);
 const server = app.listen(PORT, () => {
   console.log(`华梦沃客服务已启动`);
   console.log(`服务地址: http://localhost:${PORT}`);
