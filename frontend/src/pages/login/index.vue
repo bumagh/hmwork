@@ -3,7 +3,7 @@
     <view class="login-container">
       <view class="login-header">
         <text class="app-title">华梦沃客 </text>
-        <text class="app-subtitle">公司管理平台</text>
+        <text class="app-subtitle">AI驱动管理和获客平台</text>
       </view>
 
       <view class="login-form">
@@ -57,17 +57,18 @@
         <view class="form-actions">
           <button class="btn btn-primary" :class=" { loading: isLoading } " @click=" handleSubmit "
             :disabled=" isLoading ">
-            {{ isLoading ? '处理中...' : ( isRegisterMode ? '注册' : '登录' ) }}
+            <!-- {{ isLoading ? '处理中...' : ( isRegisterMode ? '注册' : '登录' ) }} -->
+            {{ isLoading ? '处理中...' : ( '登录' ) }}
           </button>
         </view>
 
-        <view class="form-footer">
+        <!-- <view class="form-footer">
           <text class="toggle-mode" @click=" toggleMode ">
             {{ isRegisterMode ? '已有账号？立即登录' : '没有账号？立即注册' }}
           </text>
-        </view>
+        </view> -->
 
-        <view class="default-accounts" v-if=" !isRegisterMode ">
+        <!-- <view class="default-accounts" v-if=" !isRegisterMode ">
           <text class="accounts-title">默认账号</text>
           <view class="account-list">
             <view class="account-item" v-for=" account in defaultAccounts " :key=" account.username "
@@ -76,7 +77,7 @@
               <text class="account-role">{{ account.roleLabel }}</text>
             </view>
           </view>
-        </view>
+        </view> -->
       </view>
     </view>
   </view>
