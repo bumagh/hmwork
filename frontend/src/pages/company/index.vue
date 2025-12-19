@@ -7,7 +7,24 @@
         <text class="username">{{ currentUser.username }}</text>
       </view>
     </view>
-
+    <view class="statistics-bar">
+      <view class="stat-item">
+        <text class="stat-label">今日打开</text>
+        <text class="stat-value">{{ metricsData.today.app_open || 0 }}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">今日完成任务</text>
+        <text class="stat-value">{{ metricsData.today.task_complete || 0 }}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">总计打开</text>
+        <text class="stat-value">{{ metricsData.total.app_open || 0 }}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">总计任务</text>
+        <text class="stat-value">{{ metricsData.total.task_complete || 0 }}</text>
+      </view>
+    </view>
     <view class="stats-section">
       <view class="stat-card" @click="navigateTo( '/pages/company/projects' )">
         <view class="stat-icon">📁</view>
@@ -106,13 +123,14 @@
 </template>
 
 <script lang="ts">
-import { projectApi, userApi, taskApi } from '../../utils/api';
+import { projectApi, userApi, taskApi, statisticsApi } from '../../utils/api';
 
 export default {
   name: 'CompanyIndexPage',
   data ()
   {
     return {
+      metricsData: null,
       currentUser: {
         id: null,
         username: '',
@@ -131,7 +149,11 @@ export default {
     this.loadUserInfo();
     this.loadStatistics();
     this.loadRecentActivities();
+    this.loadUserMetrics();
+    this.handleAppOpen();
+
   },
+
   methods: {
     loadUserInfo ()
     {
@@ -166,7 +188,26 @@ export default {
         } );
       }, 2000 );
     },
+    // 获取用户统计数据
+    async loadUserMetrics ()
+    {
+      try
+      {
+        const res = await statisticsApi.getUserMetrics( this.currentUser.id, {
+          metricTypes: [ 'app_open', 'task_complete' ],
+          groupBy: 'week'
+        } );
 
+        if ( res.success )
+        {
+          this.metricsData = res.data;
+        }
+      } catch ( error )
+      {
+        console.error( error );
+        uni.showToast( { title: '加载失败', icon: 'error' } );
+      }
+    },
     loadStatistics ()
     {
       projectApi.getAll().then( res =>
@@ -264,7 +305,39 @@ export default {
       if ( !this.currentUser.id ) return this.userColors[ 0 ];
       return this.userColors[ this.currentUser.id % this.userColors.length ];
     },
+    // 用户打开小程序时调用
+    async handleAppOpen ()
+    {
+      try
+      {
+        const res = await statisticsApi.recordAppOpen( this.currentUser.id );
+        if ( res.success )
+        {
+          uni.showToast( { title: '记录成功', icon: 'success' } );
+        }
+      } catch ( error )
+      {
+        console.error( error );
+        uni.showToast( { title: '记录失败', icon: 'error' } );
+      }
+    },
 
+    // 用户完成任务时调用
+    async handleTaskComplete ( taskCount = 1 )
+    {
+      try
+      {
+        const res = await statisticsApi.recordTaskComplete( this.currentUser.id, taskCount );
+        if ( res.success )
+        {
+          uni.showToast( { title: '任务完成记录成功', icon: 'success' } );
+        }
+      } catch ( error )
+      {
+        console.error( error );
+        uni.showToast( { title: '记录失败', icon: 'error' } );
+      }
+    },
     getActivityType ( type )
     {
       return `activity-${ type }`;
@@ -650,5 +723,44 @@ uni-input {
   font-size: 28rpx;
   font-weight: 300;
   color: #333333;
+}
+
+
+.statistics-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+  padding: 10rpx 32rpx;
+  margin-bottom: 16rpx;
+}
+
+.stat-item {
+  background-color: #FFFFFF;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  font-weight: 300;
+  color: #828282;
+}
+
+.stat-value {
+  font-size: 28rpx;
+  font-weight: 400;
+  color: #333333;
+}
+
+.stat-item.income .stat-value {
+  color: #6FCF97;
+}
+
+.stat-item.expense .stat-value {
+  color: #F2994A;
 }
 </style>
