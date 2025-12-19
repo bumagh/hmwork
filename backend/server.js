@@ -11,6 +11,7 @@ const Budget = require('./models/Budget');
 const User = require('./models/User');
 const Project = require('./models/Project');
 const Task = require('./models/Task');
+const UserMertrics = require('./models/UserMertrics');
 
 const transactionsRouter = require('./routes/transactions');
 const categoriesRouter = require('./routes/categories');
@@ -19,6 +20,7 @@ const authRouter = require('./routes/auth');
 const userRouter = require('./routes/users');
 const projectsRouter = require('./routes/projects');
 const tasksRouter = require('./routes/tasks');
+const statistics = require('./routes/statistics');
 
 const app = express();
 
@@ -66,6 +68,7 @@ const initDatabase = () => {
     User.initUserTable();
     Project.initProjectTable();
     Task.initTaskTable();
+    UserMertrics.initMetricsTable();
     console.log('数据库初始化完成');
   } catch (err) {
     logger.error(`数据库初始化失败: ${err.message}`);
@@ -81,6 +84,7 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/budgets', budgetsRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/tasks', tasksRouter);
+app.use('/api/statistics', statistics);
 
 app.get('/api', (req, res) => {
   res.json({

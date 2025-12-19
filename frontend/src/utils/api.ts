@@ -82,12 +82,7 @@ interface BudgetSummary
   total_remaining: number;
 }
 
-interface RequestOptions extends Partial<UniApp.RequestOptions>
-{
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  data?: any;
-  header?: Record<string, string>;
-}
+
 
 const request = async <T = any> (
   url: string,
@@ -462,6 +457,171 @@ export const taskApi = {
     request<Task[]>( `/tasks/status/${ status }` ),
 };
 
+export const statisticsApi = {
+  // 记录单个指标
+  recordMetric: ( data: RecordMetricRequest ): Promise<ApiResponse<UserMetric>> =>
+    request<UserMetric>( '/statistics/record', {
+      method: 'POST',
+      data,
+    } ),
+
+  // 批量记录指标
+  recordMetricsBatch: ( data: BatchRecordMetricRequest ): Promise<ApiResponse<{
+    success: boolean;
+    message: string;
+    data: Array<{
+      metric: RecordMetricRequest;
+      result: any;
+      error?: string;
+    }>;
+  }>> =>
+    request( '/statistics/record-batch', {
+      method: 'POST',
+      data,
+    } ),
+
+  // 获取用户指标数据
+  getUserMetrics: (
+    userId: number,
+    params?: GetUserMetricsParams
+  ): Promise<ApiResponse<UserMetricsResponse>> =>
+  {
+    let url = `/statistics/user/${ userId }`;
+
+    if ( params )
+    {
+      const queryParams = new URLSearchParams();
+
+      if ( params.metricTypes )
+      {
+        const types = Array.isArray( params.metricTypes )
+          ? params.metricTypes.join( ',' )
+          : params.metricTypes;
+        queryParams.append( 'metricTypes', types );
+      }
+
+      if ( params.startDate ) queryParams.append( 'startDate', params.startDate );
+      if ( params.endDate ) queryParams.append( 'endDate', params.endDate );
+      if ( params.groupBy ) queryParams.append( 'groupBy', params.groupBy );
+      if ( params.limit ) queryParams.append( 'limit', params.limit.toString() );
+
+      const queryString = queryParams.toString();
+      if ( queryString )
+      {
+        url += `?${ queryString }`;
+      }
+    }
+
+    return request<UserMetricsResponse>( url );
+  },
+
+  // 获取用户对比数据
+  compareUsers: ( data: CompareUsersRequest ): Promise<ApiResponse<UserComparisonItem[]>> =>
+    request<UserComparisonItem[]>( '/statistics/compare', {
+      method: 'POST',
+      data,
+    } ),
+
+  // 获取用户综合得分
+  getUserScore: (
+    userId: number,
+    data?: UserScoreRequest
+  ): Promise<ApiResponse<UserScoreResponse>> =>
+    request<UserScoreResponse>( `/statistics/score/${ userId }`, {
+      method: 'POST',
+      data: data || {},
+    } ),
+
+  // 获取指标类型列表
+  getMetricTypes: (): Promise<ApiResponse<MetricType[]>> =>
+    request<MetricType[]>( '/statistics/metric-types' ),
+
+  // 添加新的指标类型
+  addMetricType: ( data: Omit<MetricType, 'id' | 'created_at'> ): Promise<ApiResponse<MetricType>> =>
+    request<MetricType>( '/statistics/metric-types', {
+      method: 'POST',
+      data,
+    } ),
+
+  // 获取排行榜
+  getLeaderboard: ( params?: {
+    metricType?: string;
+    startDate?: string;
+    endDate?: string;
+    limit?: number;
+  } ): Promise<ApiResponse<LeaderboardResponse>> =>
+  {
+    let url = '/statistics/leaderboard';
+
+    if ( params )
+    {
+      const queryParams = new URLSearchParams();
+
+      if ( params.metricType ) queryParams.append( 'metricType', params.metricType );
+      if ( params.startDate ) queryParams.append( 'startDate', params.startDate );
+      if ( params.endDate ) queryParams.append( 'endDate', params.endDate );
+      if ( params.limit ) queryParams.append( 'limit', params.limit.toString() );
+
+      const queryString = queryParams.toString();
+      if ( queryString )
+      {
+        url += `?${ queryString }`;
+      }
+    }
+
+    return request<LeaderboardResponse>( url );
+  },
+
+  // 获取仪表板数据
+  getDashboard: (): Promise<ApiResponse<DashboardResponse>> =>
+    request<DashboardResponse>( '/statistics/dashboard' ),
+
+  // 兼容旧接口 - 记录小程序打开
+  recordAppOpen: ( userId: number ): Promise<ApiResponse<UserMetric>> =>
+    request<UserMetric>( '/statistics/app-open', {
+      method: 'POST',
+      data: { userId },
+    } ),
+
+  // 兼容旧接口 - 记录任务完成
+  recordTaskComplete: ( userId: number, taskCount?: number ): Promise<ApiResponse<UserMetric>> =>
+    request<UserMetric>( '/statistics/task-complete', {
+      method: 'POST',
+      data: {
+        userId,
+        taskCount: taskCount || 1
+      },
+    } ),
+
+  // 获取所有员工统计数据（管理员用）
+  getAllStatistics: ( params?: {
+    startDate?: string;
+    endDate?: string;
+    role?: string;
+    limit?: number;
+  } ): Promise<ApiResponse<AllStatisticsResponse[]>> =>
+  {
+    let url = '/statistics/all';
+
+    if ( params )
+    {
+      const queryParams = new URLSearchParams();
+
+      if ( params.startDate ) queryParams.append( 'startDate', params.startDate );
+      if ( params.endDate ) queryParams.append( 'endDate', params.endDate );
+      if ( params.role ) queryParams.append( 'role', params.role );
+      if ( params.limit ) queryParams.append( 'limit', params.limit.toString() );
+
+      const queryString = queryParams.toString();
+      if ( queryString )
+      {
+        url += `?${ queryString }`;
+      }
+    }
+
+    return request<AllStatisticsResponse[]>( url );
+  },
+};
 export type {
   User,
   LoginData,
@@ -492,3 +652,180 @@ interface UserListResponse
     hasPrev: boolean;
   };
 }
+interface RequestOptions extends Partial<UniApp.RequestOptions>
+{
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  data?: any;
+  header?: Record<string, string>;
+}
+
+// ============ 用户指标统计相关接口 ============
+
+// 指标类型定义
+interface MetricType
+{
+  id?: number;
+  metric_key: string;
+  display_name: string;
+  description?: string;
+  unit?: string;
+  is_accumulative: number; // 0: 覆盖类型, 1: 累加类型
+  default_value?: number;
+  created_at?: string;
+}
+
+// 用户指标记录
+interface UserMetric
+{
+  id?: number;
+  user_id: number;
+  metric_type: string;
+  metric_value: number;
+  metric_date: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+// 单个指标记录请求
+interface RecordMetricRequest
+{
+  userId: number;
+  metricType: string;
+  value?: number;
+  date?: string;
+}
+
+// 批量指标记录请求
+interface BatchRecordMetricRequest
+{
+  metrics: Array<{
+    userId: number;
+    metricType: string;
+    value?: number;
+    date?: string;
+  }>;
+}
+
+// 获取用户指标数据请求参数
+interface GetUserMetricsParams
+{
+  metricTypes?: string | string[];
+  startDate?: string;
+  endDate?: string;
+  groupBy?: 'day' | 'week' | 'month' | 'year';
+  limit?: number;
+}
+
+// 用户指标数据响应
+interface UserMetricsResponse
+{
+  today: Record<string, number>;
+  total: Record<string, number>;
+  history: Record<string, Array<{
+    period: string;
+    value: number;
+    recordCount: number;
+  }>>;
+  summary: Array<{
+    period: string;
+    metric_type: string;
+    total_value: number;
+    record_count: number;
+  }>;
+}
+
+// 用户对比数据请求
+interface CompareUsersRequest
+{
+  userIds: number[];
+  metricTypes: string[];
+  startDate?: string;
+  endDate?: string;
+}
+
+// 用户对比数据响应项
+interface UserComparisonItem
+{
+  userId: number;
+  username: string;
+  metrics: Record<string, {
+    totalValue: number;
+    activeDays: number;
+    lastRecordDate: string;
+  }>;
+}
+
+// 用户综合得分请求
+interface UserScoreRequest
+{
+  weights?: Record<string, number>;
+  startDate?: string;
+  endDate?: string;
+}
+
+// 用户综合得分响应
+interface UserScoreResponse
+{
+  userId: number;
+  totalScore: number;
+  metricDetails: Record<string, {
+    value: number;
+    weight: number;
+    weightedValue: number;
+  }>;
+  weights: Record<string, number>;
+}
+
+// 排行榜响应
+interface LeaderboardResponse
+{
+  metricType: string;
+  metricName: string;
+  unit: string;
+  leaderboard: Array<{
+    user_id: number;
+    username: string;
+    role: string;
+    total_value: number;
+    active_days: number;
+  }>;
+}
+
+// 仪表板数据响应
+interface DashboardResponse
+{
+  todayActiveUsers: number;
+  todaySummary: Record<string, number>;
+  weeklyTrend: Array<{
+    metric_date: string;
+    daily_opens: number;
+    daily_tasks: number;
+    daily_submits: number;
+  }>;
+  userRanking: Array<{
+    username: string;
+    role: string;
+    task_score: number;
+    activity_score: number;
+    active_days: number;
+  }>;
+  metricStats: Array<{
+    metric_key: string;
+    display_name: string;
+    user_count: number;
+  }>;
+}
+
+// 所有员工统计数据响应
+interface AllStatisticsResponse
+{
+  user_id: number;
+  username: string;
+  role: string;
+  total_app_opens: number;
+  total_task_completes: number;
+  total_logins: number;
+  active_days: number;
+  last_active_date: string;
+}
+

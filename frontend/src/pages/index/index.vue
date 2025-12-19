@@ -14,6 +14,28 @@
         </view>
       </view>
     </view>
+    <!-- 今日统计卡片 -->
+    <view class="stat-card" v-if=" metricsData ">
+      <view class="stat-header">今日统计</view>
+      <view class="stat-grid">
+        <view class="stat-item">
+          <text class="stat-label">打开次数</text>
+          <text class="stat-value">{{ metricsData.today.app_open || 0 }}</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">完成任务</text>
+          <text class="stat-value">{{ metricsData.today.task_complete || 0 }}</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">总计打开</text>
+          <text class="stat-value">{{ metricsData.total.app_open || 0 }}</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-label">总计任务</text>
+          <text class="stat-value">{{ metricsData.total.task_complete || 0 }}</text>
+        </view>
+      </view>
+    </view>
 
     <view class="statistics-bar">
       <view class="stat-item income">
@@ -114,11 +136,14 @@
         </view>
       </view>
     </view>
+
+
+
   </view>
 </template>
 
 <script lang="ts">
-import { transactionApi, budgetApi, getCurrentMonth, getMonthRange } from '../../utils/api';
+import { transactionApi, budgetApi, getCurrentMonth, getMonthRange, statisticsApi } from '../../utils/api';
 import TransactionForm from '../../components/TransactionForm.vue';
 import BudgetForm from '../../components/BudgetForm.vue';
 
@@ -131,6 +156,8 @@ export default {
   data ()
   {
     return {
+      metricsData: null,
+      userId: 1,
       currentMonth: '',
       transactions: [],
       monthIncome: 0,
@@ -153,6 +180,7 @@ export default {
   {
     this.currentMonth = getCurrentMonth();
     this.loadData();
+    this.loadUserMetrics();
   },
   methods: {
     loadData ()
@@ -328,6 +356,61 @@ export default {
     {
       this.showAlert = false;
     }
+    ,
+    // 用户打开小程序时调用
+    async handleAppOpen ()
+    {
+      try
+      {
+        const res = await statisticsApi.recordAppOpen( this.userId );
+        if ( res.success )
+        {
+          uni.showToast( { title: '记录成功', icon: 'success' } );
+        }
+      } catch ( error )
+      {
+        console.error( error );
+        uni.showToast( { title: '记录失败', icon: 'error' } );
+      }
+    },
+
+    // 用户完成任务时调用
+    async handleTaskComplete ( taskCount = 1 )
+    {
+      try
+      {
+        const res = await statisticsApi.recordTaskComplete( this.userId, taskCount );
+        if ( res.success )
+        {
+          uni.showToast( { title: '任务完成记录成功', icon: 'success' } );
+        }
+      } catch ( error )
+      {
+        console.error( error );
+        uni.showToast( { title: '记录失败', icon: 'error' } );
+      }
+    },
+
+    // 获取用户统计数据
+    async loadUserMetrics ()
+    {
+      try
+      {
+        const res = await statisticsApi.getUserMetrics( this.userId, {
+          metricTypes: [ 'app_open', 'task_complete' ],
+          groupBy: 'week'
+        } );
+
+        if ( res.success )
+        {
+          this.metricsData = res.data;
+        }
+      } catch ( error )
+      {
+        console.error( error );
+        uni.showToast( { title: '加载失败', icon: 'error' } );
+      }
+    },
   }
 };
 </script>
